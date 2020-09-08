@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Incoice;
+use App\Invoice;
 class InvoiceController extends Controller
 {
     /**
@@ -13,7 +13,9 @@ class InvoiceController extends Controller
      */
     public function index()
     {
-        //
+        $Invoices = Invoice::all();
+
+        return view('invoices.index', compact('Invoices'));
     }
 
     /**
@@ -23,7 +25,7 @@ class InvoiceController extends Controller
      */
     public function create()
     {
-        return view('invoice.create');
+        return view('invoices.create');
     }
 
     /**
@@ -50,7 +52,7 @@ class InvoiceController extends Controller
             'line_total' => $request->get('line_total')
         ]);
         $Invoice->save();
-        return redirect('/Invoices')->with('success', 'Invoice saved!');
+        return redirect('/invoices')->with('success', 'Invoice saved!');
     }
 
     /**
@@ -72,7 +74,8 @@ class InvoiceController extends Controller
      */
     public function edit($id)
     {
-        //
+        $invoice = Invoice::find($id);
+        return view('invoices.edit', compact('invoice')); 
     }
 
     /**
@@ -84,7 +87,21 @@ class InvoiceController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $request->validate([
+            'item_name'=>'required',
+            'description'=>'required',
+            'item_price'=>'required'
+        ]);
+
+        $invoice = invoice::find($id);
+        $invoice->item_name =  $request->get('item_name');
+        $invoice->description = $request->get('description');
+        $invoice->item_price = $request->get('item_price');
+        $invoice->quantity = $request->get('quantity');
+        $invoice->line_total = $request->get('line_total');
+        $invoice->save();
+
+        return redirect('/invoices')->with('success', 'invoice updated!');
     }
 
     /**
@@ -95,6 +112,9 @@ class InvoiceController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $invoice = Invoice::find($id);
+        $invoice->delete();
+
+        return redirect('/invoices')->with('success', 'invoice deleted!');
     }
 }

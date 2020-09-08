@@ -15,4 +15,4 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::resource('invoice', 'InvoiceController');
+Route::resource('invoices', 'InvoiceController');
